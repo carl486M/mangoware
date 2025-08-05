@@ -19,8 +19,9 @@ bool mango::input::mouseDown(int button) const {
 }
 void mango::input::pollInputs() {
     SDL_PollEvent(&global::event);
+
     if (global::event.type == SDL_QUIT) {
-        global::event.key.keysym.scancode = SDL_SCANCODE_ESCAPE; // simulate escape
+        running = false;// simulate escape
     }
     for (int i = 0; i < 512; ++i) {
         key[i] = SDL_GetKeyboardState(NULL)[i];
@@ -31,8 +32,10 @@ void mango::input::pollInputs() {
 
     if (global::event.type == SDL_KEYDOWN) {
         key[global::event.key.keysym.scancode] = true;
+        input::keyPressed = global::event.key.keysym.scancode;
     } else if (global::event.type == SDL_KEYUP) {
         key[global::event.key.keysym.scancode] = false;
+        input::keyPressed = false;
     }
     if (global::event.type == SDL_MOUSEBUTTONDOWN) {
         if (global::event.button.button < 3) {

@@ -12,9 +12,12 @@ class mango {
             public:
                 bool keyDown(int scancode) const;
                 bool mouseDown(int button) const;
+                const int& keycode = keyPressed;
                 void pollInputs();
+                bool running = true;
                 input();
             private:
+                int keyPressed;
                 bool key[512];
                 bool mouse[3];
         };
