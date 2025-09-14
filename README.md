@@ -8,4 +8,4 @@ random game I'm making with SDL2 and C++
 
 TODO: When I finish the engine... seperate it to its own project AND probally start adding lua bindings.
 
-### MIT Licensed...
+### DO WHAT THE FUCK YOU WANT LICENSE
