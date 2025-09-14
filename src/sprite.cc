@@ -1,4 +1,6 @@
 #include <mango/sprite.hpp>
+#include "SDL_rect.h"
+#include "SDL_render.h"
 #include "shared.h"
 #include <iostream>
 
@@ -22,13 +24,13 @@ void sprite::pickTilefrom(vec2 pos) {
 }
 
 void sprite::render() {
-    SDL_Rect destRect = {x, y, width * size, height * size};
-    SDL_RenderCopy(global::renderer, sprite::spriteTexture, &tileset, &destRect);
+    spriteRect = {x, y, width * size, height * size};
+    SDL_RenderCopyEx(global::renderer, sprite::spriteTexture, &tileset, &spriteRect, 0, NULL, (SDL_RendererFlip)flip);
 }
 
 void sprite::render(vec2 pos, float angle, int size) {
-    SDL_Rect destRect = {pos.x, pos.y, size * width, size * height};
-    SDL_RenderCopyEx(global::renderer, spriteTexture, &tileset, &destRect, angle, NULL, SDL_FLIP_NONE);
+    spriteRect = {pos.x, pos.y, size * width, size * height};
+    SDL_RenderCopyEx(global::renderer, spriteTexture, &tileset, &spriteRect, angle, NULL, (SDL_RendererFlip)flip);
 }
 
 void sprite::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
@@ -39,6 +41,14 @@ void sprite::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 void sprite::setPosition(vec2 pos) {
     sprite::x = pos.x;
     sprite::y = pos.y;
+}
+
+bool sprite::collided(sprite* other) {
+    if (SDL_HasIntersection(&spriteRect, &other->spriteRect)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 sprite::~sprite() {

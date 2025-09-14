@@ -1,9 +1,9 @@
 #pragma once
 #include <cstdint>
 
-#define MANGO_VERSION_MAJOR 1
-#define MANGO_VERSION_MINOR 0
-#define MANGO_VERSION_MICRO 0
+#define MANGO_VERSION_MAJOR 0
+#define MANGO_VERSION_MINOR 1
+#define MANGO_VERSION_MICRO 2
 #define MANGO_VERSION_BRANCH "dev"
 
 class mango {
@@ -27,7 +27,14 @@ class mango {
             return inst;
         }
 
+        uint32_t timer();
+        /*
+            UPDATES AND POLL EVENTS AND CLEARS THE SCREEN
+        */
         void update();
+        /*
+            RENDER IT!
+        */
         void render();
         void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
         input event;

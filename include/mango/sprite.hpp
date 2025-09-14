@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include "engine.hpp"
+
 class sprite {
     public:
         sprite(const char* path, int width, int height);
@@ -8,8 +9,10 @@ class sprite {
         void pickTilefrom(vec2 pos);
         int x, y;
         int size = 1;
-        float angle;
+        float angle = 0.0f;
+        bool flip = false;
 
+        bool collided(sprite* other);
         void setPosition(vec2 pos);
         void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
         void render(vec2 pos, float angle, int size);
@@ -18,6 +21,7 @@ class sprite {
     private:
         SDL_Texture* spriteTexture;
         SDL_Rect tileset;
+        SDL_Rect spriteRect;
         int width, height;
         int texW, texH;
 };
