@@ -1,11 +1,13 @@
-# Charlie Subatomic!
+# MANGOWARE
 
-random game I'm making with SDL2 and C++
+its a tiny engine I made with SDL2 and C++ 17
 
-## NOTE:
+## TODO: MIGRATE TO SDL3.
 
-### this game does include the Mangoware engine although its merged together.
-
-TODO: When I finish the engine... seperate it to its own project AND probally start adding lua bindings.
-
-### DO WHAT THE FUCK YOU WANT LICENSE
+Dev System:
+MacbookAir7,1
+Intel Core i5-5250U @ 1.60Ghz
+4.0GB RAM
+128GB SSD
+Intel HD Graphics 6000
+Windows 10 21H2 LTSC

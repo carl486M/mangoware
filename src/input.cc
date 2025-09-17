@@ -1,7 +1,7 @@
 #include "shared.h"
 #include <mango/engine.hpp>
 
-mango::input::input() {
+engine::input::input() {
     for (int i = 0; i < 512; ++i) {
         key[i] = false;
     }
@@ -10,14 +10,14 @@ mango::input::input() {
     }
 }
 
-bool mango::input::keyDown(int scancode) const {
+bool engine::input::keyDown(int scancode) const {
     return key[scancode];
 }
     
-bool mango::input::mouseDown(int button) const {
+bool engine::input::mouseDown(int button) const {
     return mouse[button];
 }
-void mango::input::pollInputs() {
+void engine::input::pollInputs() {
     SDL_PollEvent(&global::event);
 
     if (global::event.type == SDL_QUIT) {

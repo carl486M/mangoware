@@ -3,8 +3,10 @@
 #include "SDL_render.h"
 #include "shared.h"
 #include <iostream>
+#include <mango/camera.hpp>
 
-sprite::sprite(const char* path, int width, int height) : width(width), height(height) {
+sprite::sprite(const char* path, int width, int height, camera* camera)
+    : width(width), height(height), spriteRect{0, 0, width, height}, targetCam(camera) {
     SDL_Surface* loaded = SDL_LoadBMP_RW(SDL_RWFromFile(path, "rb"), 1);
     if (!loaded) std::cerr << "Can't load surface: " << SDL_GetError() << std::endl;
     spriteTexture = SDL_CreateTextureFromSurface(global::renderer, loaded);
@@ -24,14 +26,18 @@ void sprite::pickTilefrom(vec2 pos) {
 }
 
 void sprite::render() {
-    spriteRect = {x, y, width * size, height * size};
-    SDL_RenderCopyEx(global::renderer, sprite::spriteTexture, &tileset, &spriteRect, 0, NULL, (SDL_RendererFlip)flip);
+    spriteRect = {x, y, static_cast<int>(width * size.get()), static_cast<int>(height * size.get())};
+    SDL_Rect projection = convertRect2DToSDLRect(targetCam->worldToCamera(spriteRect));
+    SDL_RenderCopyEx(global::renderer, sprite::spriteTexture, &tileset, &projection, 0, NULL, (SDL_RendererFlip)flip);
 }
 
-void sprite::render(vec2 pos, float angle, int size) {
-    spriteRect = {pos.x, pos.y, size * width, size * height};
-    SDL_RenderCopyEx(global::renderer, spriteTexture, &tileset, &spriteRect, angle, NULL, (SDL_RendererFlip)flip);
+void sprite::render(vec2 pos, float angle, float size) {
+    sprite::size.set(size);
+    spriteRect = {pos.x, pos.y, static_cast<int>(sprite::size.get() * width), static_cast<int>(sprite::size.get() * height)};
+    SDL_Rect sdlRect = convertRect2DToSDLRect(targetCam->worldToCamera(spriteRect));
+    SDL_RenderCopyEx(global::renderer, spriteTexture, &tileset, &sdlRect, angle, NULL, (SDL_RendererFlip)flip);
 }
+
 
 void sprite::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     SDL_SetTextureColorMod(spriteTexture, r, g, b);
@@ -44,7 +50,9 @@ void sprite::setPosition(vec2 pos) {
 }
 
 bool sprite::collided(sprite* other) {
-    if (SDL_HasIntersection(&spriteRect, &other->spriteRect)) {
+    SDL_Rect rect1 = convertRect2DToSDLRect(spriteRect);
+    SDL_Rect rect2 = convertRect2DToSDLRect(other->spriteRect);
+    if (SDL_HasIntersection(&rect1, &rect2)) {
         return true;
     } else {
         return false;
