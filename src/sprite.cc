@@ -59,6 +59,16 @@ bool sprite::collided(sprite* other) {
     }
 }
 
+bool sprite::collided(rect2D* other) {
+    SDL_Rect rect1 = convertRect2DToSDLRect(spriteRect);
+    SDL_Rect rect2 = convertRect2DToSDLRect(*other);
+    if (SDL_HasIntersection(&rect1, &rect2)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 sprite::~sprite() {
     std::cout << "[SPRITE] bye bye\n";
     SDL_DestroyTexture(spriteTexture);

@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <mango/engine.hpp>
+#include "imgui/backend/imgui_impl_sdl2.h"
+#include "imgui/backend/imgui_impl_sdlrenderer2.h"
 
 namespace global {
     inline SDL_Window* window = nullptr;

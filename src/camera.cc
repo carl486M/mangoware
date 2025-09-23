@@ -4,9 +4,9 @@
 #include "mango/engine.hpp"
 #include "shared.h"
 
-camera::camera(int x, int y, int w, int h): view(x, y, w, h) {
+camera::camera(int x, int y, int w, int h) {
     renderTarget = SDL_CreateTexture(global::renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
-
+    view = {x, y, w, h};
 }
 
 void camera::move(int dx, int dy) {

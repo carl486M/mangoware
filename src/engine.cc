@@ -1,9 +1,10 @@
 #include <cstdint>
+#include <cstdio>
 #include <mango/engine.hpp>
-#include "SDL_timer.h"
-#include "mango/camera.hpp"
+#include <mango.hpp>
 #include "shared.h"
 #include <iostream>
+#include <mango/imgui/imgui.h>
 
 void engine::init() {
     SDL_SetMainReady();
@@ -20,17 +21,26 @@ engine::engine(const char *title, int width, int height, uint32_t flags)
     global::window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
     global::renderer = SDL_CreateRenderer(global::window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
     global::event = {};
-    SDL_version linkedVER;
-    SDL_VERSION(&linkedVER);
+
+    SDL_version compiled;
+    SDL_RendererInfo info;
+    SDL_GetRendererInfo(global::renderer, &info);
+    SDL_GetVersion(&compiled);
     
-    std::cout << "engineware " << 
+    std::cout << "mangoware " << 
         MANGO_VERSION_MAJOR << "." <<
         MANGO_VERSION_MINOR << "." <<
         MANGO_VERSION_MICRO << "-" <<
-        MANGO_VERSION_BRANCH << " (SDL " <<
-        linkedVER.major << "." << linkedVER.minor << "." << linkedVER.patch << " on " <<
-        SDL_GetPlatform() << ")" << 
-    std::endl;
+        MANGO_VERSION_BRANCH << " (" << MANGO_VERISON_COMMIT << ")";
+    printf(" (SDL %u.%u.%u with %s)\n",
+       compiled.major, compiled.minor, compiled.patch, info.name);
+    std::cout << mangosystem::platform() << " " << mangosystem::kernelVersion() << " [" << mangosystem::compiler() << " " << mangosystem::compilerVersion() << "/" << mangosystem::architecture() << "]\n";
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGui_ImplSDL2_InitForSDLRenderer(global::window, global::renderer);
+    ImGui_ImplSDLRenderer2_Init(global::renderer);
 }
 
 float getDeltaTime() {
@@ -51,11 +61,18 @@ float getDeltaTime() {
 void engine::update() {
     deltatime = getDeltaTime();
     event.pollInputs();
+    ImGui_ImplSDL2_ProcessEvent(&global::event);
+
     SDL_SetRenderDrawColor(global::renderer, clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     SDL_RenderClear(global::renderer);
+    ImGui_ImplSDLRenderer2_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
+    ImGui::NewFrame();
 }
 
 void engine::render() {
+    ImGui::Render();
+    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), global::renderer);
     SDL_RenderPresent(global::renderer);
 }
 
@@ -68,7 +85,10 @@ uint32_t engine::timer() {
 }
 
 void engine::quit() {
-    std::cout << "bye bye" << std::endl;
+    // std::cout << "bye bye" << std::endl;
+    ImGui_ImplSDLRenderer2_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
     SDL_DestroyRenderer(global::renderer);
 	SDL_DestroyWindow(global::window);
 	SDL_Quit();

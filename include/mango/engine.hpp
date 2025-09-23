@@ -3,57 +3,12 @@
 
 #define MANGO_VERSION_MAJOR 0
 #define MANGO_VERSION_MINOR 1
-#define MANGO_VERSION_MICRO 2
-#define MANGO_VERSION_BRANCH "dev"
+#define MANGO_VERSION_MICRO 3
+#define MANGO_VERSION_BRANCH "raw"
+#define MANGO_VERISON_COMMIT "unknown"
 
 class camera;
-
-struct vec2 {
-    int x, y;
-    vec2(int x, int y) : x(x), y(y) {}
-};
-
-struct vec3 {
-    int x, y, z;
-    vec3(int x, int y, int z) : x(x), y(y), z(z) {}
-};
-
-struct vec4 {
-    int x, y, z, w;
-    vec4(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {} 
-};
-
-struct rect2D {
-    int x, y, w, h;
-    rect2D(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
-};
-
-struct rangeInt {
-private:
-    int maxValue;
-    int minValue;
-    int value;
-public:
-    rangeInt(int starter, int min, int max) {
-        maxValue = max;
-        minValue = min; 
-        if (starter < minValue || starter > maxValue) {
-            starter = minValue;
-        } else {
-            starter = value;
-        }
-    }
-
-    void set(int newvalue) {
-        if (newvalue < minValue || newvalue > maxValue) {
-            value = minValue;
-        } else {
-            value = newvalue;
-        }
-    }
-
-    int get() { return value; }
-};
+#include "types.hpp"
 
 class engine {
     private:
@@ -92,12 +47,19 @@ class engine {
         input event;
         vec2 getCenter(camera* camera);
 
-        ~engine() { quit(); }
+
+        inline bool intersects(const rect2D& a, const rect2D& b) {
+            return (a.x < b.x + b.w &&
+            a.x + a.w > b.x &&
+            a.y < b.y + b.h &&
+            a.y + a.h > b.y);
+        }
+
+        void quit();
     protected:
         float deltatime;
     private:
         vec4 clearColor;
         engine(const char* title, int width, int height, uint32_t flags);
         void init();
-        void quit();
 };

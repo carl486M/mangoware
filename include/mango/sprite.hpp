@@ -1,6 +1,6 @@
 #pragma once
+#include "mango/types.hpp"
 #include <SDL2/SDL.h>
-// #include "camera.hpp"
 class camera; // forward-declare to avoid header dependency
 #include "engine.hpp"
 
@@ -16,6 +16,8 @@ class sprite {
         bool flip = false;
 
         bool collided(sprite* other);
+        bool collided(rect2D* other);
+
         void setPosition(vec2 pos);
         void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
         void render(vec2 pos, float angle, float size);
